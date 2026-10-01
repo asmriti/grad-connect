@@ -43,6 +43,9 @@ class SearchRequest(BaseModel):
     query: str = Field(min_length=1, max_length=1000)
     university: str | None = None
     country: str | None = None
+    # When set, raises the similarity floor above the server default.
+    # Values below the configured floor are ignored by the route.
+    min_similarity: float | None = Field(default=None, ge=0, le=1)
     page: int = Field(default=1, ge=1)
     limit: int = Field(default=10, ge=1, le=100)  # page size
 

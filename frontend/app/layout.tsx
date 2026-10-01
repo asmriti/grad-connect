@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Spectral } from "next/font/google";
+import SiteHeader from "@/components/SiteHeader";
 import "./globals.css";
 
 const spectral = Spectral({
@@ -26,18 +27,7 @@ export default function RootLayout({
     <html lang="en" className={`${spectral.variable} ${inter.variable}`}>
       <body>
         <div className="container">
-          <header className="masthead">
-            <h1>
-              <a href="/">Grad Connect</a>
-            </h1>
-            <p>
-              Search professors by research topic. Every result cites text from
-              the professor&apos;s own pages.
-            </p>
-            <nav className="site-nav" aria-label="Main">
-              <a href="/match">Match my resume</a>
-            </nav>
-          </header>
+          <SiteHeader />
           {children}
         </div>
       </body>

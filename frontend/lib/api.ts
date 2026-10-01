@@ -97,6 +97,7 @@ export function searchProfessors(
   university: string,
   country: string,
   page = 1,
+  minSimilarity?: number,
 ): Promise<SearchResponse> {
   const params = new URLSearchParams({
     query,
@@ -105,6 +106,7 @@ export function searchProfessors(
   });
   if (university) params.set("university", university);
   if (country) params.set("country", country);
+  if (minSimilarity != null) params.set("min_similarity", String(minSimilarity));
   return get<SearchResponse>(`/api/search?${params.toString()}`);
 }
 
@@ -115,6 +117,7 @@ export async function matchResume(
   university: string,
   country: string,
   page = 1,
+  minSimilarity?: number,
 ): Promise<MatchResponse> {
   const form = new FormData();
   if (input.file) {
@@ -124,6 +127,7 @@ export async function matchResume(
   }
   if (university) form.set("university", university);
   if (country) form.set("country", country);
+  if (minSimilarity != null) form.set("min_similarity", String(minSimilarity));
   form.set("page", String(page));
   form.set("limit", String(PAGE_SIZE));
 

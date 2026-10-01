@@ -35,6 +35,9 @@ router = APIRouter(prefix="/api")
 def _run_search(request: SearchRequest, db: Session) -> SearchResponse:
     embedder = get_embedding_service()
     query_embedding = embedder.embed_query(request.query)
+    floor = request.min_similarity
+    if floor is not None:
+        floor = max(floor, get_settings().min_similarity)
     page = search_professors(
         db,
         query_embedding,
@@ -42,6 +45,7 @@ def _run_search(request: SearchRequest, db: Session) -> SearchResponse:
         offset=(request.page - 1) * request.limit,
         university=request.university,
         country=request.country,
+        min_similarity=floor,
     )
     return SearchResponse(
         query=request.query,
@@ -72,12 +76,18 @@ def search_get(
     query: str = Query(min_length=1, max_length=1000),
     university: str | None = None,
     country: str | None = None,
+    min_similarity: float | None = Query(default=None, ge=0, le=1),
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=10, ge=1, le=100),
     db: Session = Depends(get_db),
 ) -> SearchResponse:
     request = SearchRequest(
-        query=query, university=university, country=country, page=page, limit=limit
+        query=query,
+        university=university,
+        country=country,
+        min_similarity=min_similarity,
+        page=page,
+        limit=limit,
     )
     return _run_search(request, db)
 
@@ -93,6 +103,7 @@ def match(
     text: str | None = Form(default=None),
     university: str | None = Form(default=None),
     country: str | None = Form(default=None),
+    min_similarity: float | None = Form(default=None),
     page: int = Form(default=1, ge=1),
     limit: int = Form(default=10, ge=1, le=100),
     db: Session = Depends(get_db),
@@ -124,6 +135,9 @@ def match(
         )
 
     settings = get_settings()
+    floor = min_similarity
+    if floor is not None:
+        floor = max(min(floor, 1.0), settings.min_similarity)
     result = match_resume(
         db,
         get_embedding_service(),
@@ -134,6 +148,7 @@ def match(
         offset=(page - 1) * limit,
         university=university,
         country=country,
+        min_similarity=floor,
     )
     return MatchResponse(
         filename=filename,

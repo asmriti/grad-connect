@@ -4,7 +4,7 @@ A professor-search project for students: **semantic search** over
 professor websites, **resume matching**, and the **crawling + indexing**
 pipeline that feeds them. Type a research topic (or upload a resume) and get
 back professors ranked by how semantically similar their own website content
-is — with the exact text passages as evidence.
+is with the exact text passages as evidence.
 
 <img width="2940" height="11418" alt="image" src="https://github.com/user-attachments/assets/11c8cf38-8e23-4c8a-bf86-7a401e742951" />
 
